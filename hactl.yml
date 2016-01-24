@@ -1,0 +1,36 @@
+clusters:
+  customer:
+    -
+      host: 10.0.1.81
+      port: 6101
+    -
+      host: 10.0.1.81
+      port: 6102
+    -
+      host: 10.0.1.82
+      port: 6101
+    -
+      host: 10.0.1.82
+      port: 6102
+  b2b:
+    -
+      host: 10.0.1.83
+      port: 6101
+    -
+      host: 10.0.1.83
+      port: 6102
+    -
+      host: 10.0.1.84
+      port: 6101
+    -
+      host: 10.0.1.84
+      port: 6102
+map:
+  webapp:
+    cluster: customer
+    backends: [ be_production_base1, be_production_base2 ]
+    servers: [ web1, web2 ]
+  api:
+    cluster: b2b
+    backends: [ be_production_api ]
+    servers: [ api1, api2 ]
