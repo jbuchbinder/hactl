@@ -17,6 +17,7 @@ var (
 	EnableAll    = flag.Bool("enableall", false, "Enable service")
 	DisableAll   = flag.Bool("disableall", false, "Disable service")
 	Failover     = flag.Bool("failover", false, "Disable all services")
+	Recover      = flag.Bool("recover", false, "Enable all services")
 )
 
 func main() {
@@ -29,7 +30,7 @@ func main() {
 		return
 	}
 
-	if !*Enable && !*Disable && !*EnableAll && !*DisableAll && !*Failover {
+	if !*Enable && !*Disable && !*EnableAll && !*DisableAll && !*Failover && !*Recover {
 		usage()
 		return
 	}
@@ -64,10 +65,10 @@ func main() {
 		return
 	}
 
-	if *Failover {
+	if *Failover || *Recover {
 		for s, _ := range ServerMap {
 			fmt.Printf("Processing server %s\n", s)
-			serverAction(s, false)
+			serverAction(s, *Recover)
 		}
 	}
 }
