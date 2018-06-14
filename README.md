@@ -1,6 +1,7 @@
 # HACTL
 
 [![Build Status](https://secure.travis-ci.org/jbuchbinder/hactl.png)](http://travis-ci.org/jbuchbinder/hactl)
+[![Report Card](https://goreportcard.com/badge/github.com/jbuchbinder/hactl)](https://goreportcard.com/report/github.com/jbuchbinder/hactl)
 
 haproxy control via stats/admin socket for 1.4/1.5+
 
