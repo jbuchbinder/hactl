@@ -37,13 +37,13 @@ func main() {
 
 	// Handle single service enable/disable
 	if *enable || *disable {
-		m, ok := HaMap[*app]
+		m, ok := haMap[*app]
 		if !ok {
 			fmt.Printf("Service '%s' not found.\n", *app)
 			return
 		}
 
-		c := ClusterMap[m.Cluster]
+		c := clusterMap[m.Cluster]
 		for _, h := range c {
 			for _, b := range m.BackendSlugs {
 				action := "enable"
@@ -66,7 +66,7 @@ func main() {
 	}
 
 	if *failoverAll || *recoverAll {
-		for s := range ServerMap {
+		for s := range serverMap {
 			fmt.Printf("Processing server %s\n", s)
 			serverAction(s, *recoverAll)
 		}
@@ -74,14 +74,14 @@ func main() {
 }
 
 func serverAction(s string, enable bool) {
-	_, ok := ServerMap[s]
+	_, ok := serverMap[s]
 	if !ok {
 		fmt.Printf("Server '%s' not found.\n", s)
 		return
 	}
 
-	for _, v := range ServerMap[s] {
-		c := ClusterMap[v.Cluster]
+	for _, v := range serverMap[s] {
+		c := clusterMap[v.Cluster]
 		for _, h := range c {
 			for _, b := range v.BackendSlugs {
 				action := "enable"
@@ -100,7 +100,7 @@ func serverAction(s string, enable bool) {
 
 func listServicesAction() {
 	fmt.Printf("Supported services:\n")
-	for k, v := range HaMap {
+	for k, v := range haMap {
 		fmt.Printf("\t%s [%s]\n", k, strings.Join(v.Servers, " "))
 	}
 }
