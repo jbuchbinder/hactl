@@ -7,17 +7,17 @@ import (
 )
 
 var (
-	ConfigFile   = flag.String("config", "/etc/hactl.yml", "Config file location")
-	Debug        = flag.Bool("debug", false, "Debug (don't execute commands)")
-	ListServices = flag.Bool("list", false, "List services")
-	App          = flag.String("app", "", "Application")
-	Server       = flag.String("server", "", "Server")
-	Enable       = flag.Bool("enable", false, "Enable service")
-	Disable      = flag.Bool("disable", false, "Disable service")
-	EnableAll    = flag.Bool("enableall", false, "Enable service")
-	DisableAll   = flag.Bool("disableall", false, "Disable service")
-	Failover     = flag.Bool("failover", false, "Disable all services")
-	Recover      = flag.Bool("recover", false, "Enable all services")
+	configFile   = flag.String("config", "/etc/hactl.yml", "Config file location")
+	debug        = flag.Bool("debug", false, "Debug (don't execute commands)")
+	listServices = flag.Bool("list", false, "List services")
+	app          = flag.String("app", "", "Application")
+	server       = flag.String("server", "", "Server")
+	enable       = flag.Bool("enable", false, "Enable service")
+	disable      = flag.Bool("disable", false, "Disable service")
+	enableAll    = flag.Bool("enableall", false, "Enable service")
+	disableAll   = flag.Bool("disableall", false, "Disable service")
+	failoverAll     = flag.Bool("failover", false, "Disable all services")
+	recoverAll      = flag.Bool("recover", false, "Enable all services")
 )
 
 func main() {
@@ -25,21 +25,21 @@ func main() {
 
 	parseConfig()
 
-	if *ListServices {
-		listServices()
+	if *listServices {
+		listServicesAction()
 		return
 	}
 
-	if !*Enable && !*Disable && !*EnableAll && !*DisableAll && !*Failover && !*Recover {
+	if !*enable && !*disable && !*enableAll && !*disableAll && !*failoverAll && !*recoverAll {
 		usage()
 		return
 	}
 
 	// Handle single service enable/disable
-	if *Enable || *Disable {
-		m, ok := HaMap[*App]
+	if *enable || *disable {
+		m, ok := HaMap[*app]
 		if !ok {
-			fmt.Printf("Service '%s' not found.\n", *App)
+			fmt.Printf("Service '%s' not found.\n", *app)
 			return
 		}
 
@@ -47,11 +47,11 @@ func main() {
 		for _, h := range c {
 			for _, b := range m.BackendSlugs {
 				action := "enable"
-				if *Disable {
+				if *disable {
 					action = "disable"
 				}
-				fmt.Printf("%s:%d[%s] %s %s\n", h.Host, h.Port, b, action, *Server)
-				err := HaproxySetStatus(h.Host, h.Port, b, *Server, *Enable)
+				fmt.Printf("%s:%d[%s] %s %s\n", h.Host, h.Port, b, action, *server)
+				err := haproxySetStatus(h.Host, h.Port, b, *server, *enable)
 				if err != nil {
 					fmt.Printf("%v\n", err)
 				}
@@ -60,15 +60,15 @@ func main() {
 	}
 
 	// Handle enable/disable for entire server
-	if *EnableAll || *DisableAll {
-		serverAction(*Server, *EnableAll)
+	if *enableAll || *disableAll {
+		serverAction(*server, *enableAll)
 		return
 	}
 
-	if *Failover || *Recover {
+	if *failoverAll || *recoverAll {
 		for s, _ := range ServerMap {
 			fmt.Printf("Processing server %s\n", s)
-			serverAction(s, *Recover)
+			serverAction(s, *recoverAll)
 		}
 	}
 }
@@ -85,11 +85,11 @@ func serverAction(s string, enable bool) {
 		for _, h := range c {
 			for _, b := range v.BackendSlugs {
 				action := "enable"
-				if *DisableAll {
+				if *disableAll {
 					action = "disable"
 				}
 				fmt.Printf("%s:%d[%s] %s %s\n", h.Host, h.Port, b, action, s)
-				err := HaproxySetStatus(h.Host, h.Port, b, s, enable)
+				err := haproxySetStatus(h.Host, h.Port, b, s, enable)
 				if err != nil {
 					fmt.Printf("%v\n", err)
 				}
@@ -98,7 +98,7 @@ func serverAction(s string, enable bool) {
 	}
 }
 
-func listServices() {
+func listServicesAction() {
 	fmt.Printf("Supported services:\n")
 	for k, v := range HaMap {
 		fmt.Printf("\t%s [%s]\n", k, strings.Join(v.Servers, " "))

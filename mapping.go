@@ -30,7 +30,7 @@ type HaServer struct {
 }
 
 func parseConfig() {
-	data, err := ioutil.ReadFile(*ConfigFile)
+	data, err := ioutil.ReadFile(*configFile)
 	if err != nil {
 		panic(err)
 	}

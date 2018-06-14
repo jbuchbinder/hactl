@@ -5,13 +5,13 @@ import (
 	"net"
 )
 
-func HaproxySetStatus(hahost string, haport int, backend, server string, enabled bool) error {
+func haproxySetStatus(hahost string, haport int, backend, server string, enabled bool) error {
 	cmd := "enable"
 	if !enabled {
 		cmd = "disable"
 	}
 
-	if *Debug {
+	if *debug {
 		fmt.Printf("%s:%d => %s server %s/%s\n", hahost, haport, cmd, backend, server)
 		return nil
 	}
