@@ -16,8 +16,8 @@ var (
 	disable      = flag.Bool("disable", false, "Disable service")
 	enableAll    = flag.Bool("enableall", false, "Enable service")
 	disableAll   = flag.Bool("disableall", false, "Disable service")
-	failoverAll     = flag.Bool("failover", false, "Disable all services")
-	recoverAll      = flag.Bool("recover", false, "Enable all services")
+	failoverAll  = flag.Bool("failover", false, "Disable all services")
+	recoverAll   = flag.Bool("recover", false, "Enable all services")
 )
 
 func main() {
@@ -66,7 +66,7 @@ func main() {
 	}
 
 	if *failoverAll || *recoverAll {
-		for s, _ := range ServerMap {
+		for s := range ServerMap {
 			fmt.Printf("Processing server %s\n", s)
 			serverAction(s, *recoverAll)
 		}
