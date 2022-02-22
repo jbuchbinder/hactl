@@ -18,6 +18,7 @@ var (
 	disableAll   = flag.Bool("disableall", false, "Disable service")
 	failoverAll  = flag.Bool("failover", false, "Disable all services")
 	recoverAll   = flag.Bool("recover", false, "Enable all services")
+	timeout      = flag.Int("timeout", 5, "Network timeout in seconds")
 )
 
 func main() {

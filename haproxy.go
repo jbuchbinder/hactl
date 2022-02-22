@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net"
+	"time"
 )
 
 func haproxySetStatus(hahost string, haport int, backend, server string, enabled bool) error {
@@ -16,7 +17,9 @@ func haproxySetStatus(hahost string, haport int, backend, server string, enabled
 		return nil
 	}
 
-	conn, err := net.Dial("tcp", fmt.Sprintf("%s:%d", hahost, haport))
+	conn, err := net.DialTimeout("tcp",
+		fmt.Sprintf("%s:%d", hahost, haport),
+		time.Second*time.Duration(*timeout))
 	if err != nil {
 		return err
 	}
