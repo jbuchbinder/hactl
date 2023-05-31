@@ -3,7 +3,7 @@ package main
 import (
 	"io/ioutil"
 
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 // Define all application mappings
